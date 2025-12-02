@@ -20,20 +20,70 @@
 
     h1 {
       font-size: 32px;
-      margin: 20px 0;
+      margin: 5px 0; /* Reduced from 20px to 5px */
       letter-spacing: 4px;
       text-transform: uppercase;
       text-align: center;
     }
 
-    .games {
+    .Apps, .Games {
       display: flex;
       flex-direction: column;
       gap: 16px;
-      margin-top: 40px;
+      margin-top: 20px; /* Reduced from 40px to 20px */
       width: 100%;
       max-width: 400px;
       padding: 0 20px;
+      position: relative; /* Added for positioning context */
+    }
+
+    .link-container {
+      position: relative;
+      display: block;
+    }
+
+    .preview-image {
+      position: absolute;
+      top: 50%; /* Center vertically with the link */
+      left: calc(100% + 20px); /* Position to the right of the link with some spacing */
+      transform: translateY(-50%); /* Center vertically */
+      width: 200px; /* Adjust size as needed */
+      height: 120px; /* Adjust size as needed */
+      background-size: cover;
+      background-position: center;
+      border: 2px solid #000;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .description {
+      position: absolute;
+      top: 50%;
+      right: calc(100% + 20px); /* Position to the left of the link */
+      transform: translateY(-50%);
+      background: #000;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .link-container:hover .preview-image,
+    .link-container:hover .description {
+      opacity: 1;
+      visibility: visible;
     }
 
     a {
@@ -67,20 +117,77 @@
   <h1>Mestre's Workshop</h1>
   <div class="Apps">
     <h2>Apps</h2>
-    <a href="https://blip-blop.vercel.app/">Blip Blop - Online Sampler</a>
-    <a href="https://audiocleaner.site/">Audio Cleaner</a>
-    <a href="https://carlosmestre1997.github.io/SSQuiz/">Vegetable Quiz</a>
+    <div class="link-container">
+      <div class="preview-image" style="background-image: url('./previews/blip.png');"></div>
+      <div class="description">Winner of the StartSchool Riga Hackaton (28/11)</div>
+      <a href="https://blip-blop.vercel.app/">Blip Blop - Online Sampler</a>
+    </div>
+    <div class="link-container">
+      <div class="preview-image" style="background-image: url('./previews/AC.png');"></div>
+      <a href="https://audiocleaner.site/">Audio Cleaner</a>
+    </div>
+    <div class="link-container">
+      <div class="preview-image" style="background-image: url('./previews/veggie.png');"></div>
+      <a href="https://carlosmestre1997.github.io/SSQuiz/">Vegetable Quiz</a>
+    </div>
   </div>
   <div class="Games">
     <h2>Games</h2>
-    <a href="https://carlosmestre1997.github.io/tamachill/">Tamagochill</a>
-    <a href="https://guess-exe.vercel.app/">Guess.exe - impostor game</a>
-    <a href="https://carlosmestre1997.github.io/BasaroRPG/">BasaroRPG</a>
-    <a href="https://carlosmestre1997.github.io/BasaroRPG-II/">Basaro II</a>
+    <div class="link-container">
+      <div class="preview-image" style="background-image: url('./previews/tama.png');"></div>
+      <a href="https://carlosmestre1997.github.io/tamachill/">Tamagochill</a>
+    </div>
+    <div class="link-container">
+      <div class="preview-image" style="background-image: url('./previews/guess.png');"></div>
+      <a href="https://guess-exe.vercel.app/">Guess.exe - impostor game</a>
+    </div>
+    <div class="link-container">
+      <div class="preview-image" style="background-image: url('./previews/bas.png');"></div>
+      <a href="https://carlosmestre1997.github.io/BasaroRPG/">BasaroRPG</a>
+    </div>
+    <div class="link-container">
+      <div class="preview-image" style="background-image: url('./previews/bas2.png');"></div>
+      <a href="https://carlosmestre1997.github.io/BasaroRPG-II/">Basaro II</a>
+    </div>
   </div>
 
   <footer>
     Made by Carlos Mestre
   </footer>
+
+  <script>
+    // Optional: Add touch support for mobile devices
+    document.addEventListener('DOMContentLoaded', function() {
+      const linkContainers = document.querySelectorAll('.link-container');
+      
+      linkContainers.forEach(container => {
+        const preview = container.querySelector('.preview-image');
+        const description = container.querySelector('.description');
+        
+        // For touch devices, show preview and description on tap and hide after 3 seconds
+        container.addEventListener('touchstart', function() {
+          if (preview) {
+            preview.style.opacity = '1';
+            preview.style.visibility = 'visible';
+          }
+          if (description) {
+            description.style.opacity = '1';
+            description.style.visibility = 'visible';
+          }
+          
+          setTimeout(() => {
+            if (preview) {
+              preview.style.opacity = '0';
+              preview.style.visibility = 'hidden';
+            }
+            if (description) {
+              description.style.opacity = '0';
+              description.style.visibility = 'hidden';
+            }
+          }, 3000);
+        });
+      });
+    });
+  </script>
 </body>
 </html>
