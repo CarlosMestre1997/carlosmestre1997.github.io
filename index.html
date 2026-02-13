@@ -5,32 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carlos Mestre's Workshop</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      margin: 0;
-      padding: 0;
       background: #0a0a1a;
       color: #fff;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-      padding: 40px 20px;
-      position: relative;
-      overflow-x: hidden;
     }
-    
+
     #starfield {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       z-index: 0;
       pointer-events: none;
     }
-    
+
     .content {
       position: relative;
       z-index: 1;
@@ -38,155 +33,297 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      padding: 40px 20px 20px;
     }
 
     h1 {
-      font-size: 38px;
-      margin: 20px 0 10px 0;
+      font-size: clamp(24px, 5vw, 42px);
+      margin: 20px 0 6px;
       letter-spacing: 6px;
       text-transform: uppercase;
       text-align: center;
       font-weight: 700;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      background: linear-gradient(to right, #fff, #f0f0f0);
+      background: linear-gradient(to right, #fff, #d0d0ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    
+
     h2 {
-      font-size: 16px;
-      margin: 0 0 30px 0;
+      font-size: 14px;
+      margin: 0 0 10px;
       text-align: center;
       font-weight: 700;
-    
-      color: #3c3967;
+      color: #5a5899;
       text-transform: uppercase;
       letter-spacing: 6px;
-      
     }
 
-    .Apps, .Games {
+    /* ── Carousel ── */
+    .carousel-wrapper {
+      width: 100%;
+      max-width: 1100px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      margin-top: 50px;
+      align-items: center;
+      margin-top: 20px;
+      flex: 1;
+    }
+
+    .carousel-viewport {
       width: 100%;
-      max-width: 500px;
-      padding: 0 20px;
+      height: clamp(340px, 55vh, 520px);
+      perspective: 1400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       position: relative;
-    }
-    
-    .Games {
-      margin-top: 80px;
+      user-select: none;
+      overflow: visible;
     }
 
-    .link-container {
+
+
+    .carousel-scene {
+      width: 400px;
+      height: 100%;
       position: relative;
-      display: block;
-      transform: translateY(0);
-      transition: transform 0.3s ease;
-    }
-    
-    .link-container:hover {
-      transform: translateY(-5px);
+      transform-style: preserve-3d;
+      transition: transform 0.45s cubic-bezier(.4,0,.2,1);
+      overflow: visible;
     }
 
-    .preview-image {
+    .carousel-item {
       position: absolute;
+      width: 400px;
+      height: 253px;
       top: 50%;
-      left: calc(100% + 20px);
-      transform: translateY(-50%) scale(0.95);
-      width: 240px;
-      height: 140px;
-      background-size: cover;
-      background-position: center;
-      border: 3px solid rgba(255,255,255,0.3);
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      z-index: 1000;
+      left: 0;
+      margin-top: -126px;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.3s, filter 0.45s, transform 0.45s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+      backface-visibility: hidden;
+    }
+
+    .carousel-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
       pointer-events: none;
     }
-    
-    .link-container:hover .preview-image {
-      transform: translateY(-50%) scale(1);
-      opacity: 1;
-      visibility: visible;
-    }
 
-    .description {
+    .carousel-item .item-label {
       position: absolute;
-      top: 50%;
-      right: calc(100% + 20px);
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(10px);
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      white-space: nowrap;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      z-index: 1000;
-      pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .link-container:hover .description {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    a {
-      display: block;
-      text-align: center;
-      padding: 16px 24px;
-      border: none;
-      text-decoration: none;
-      color: #fff;
-      font-size: 16px;
+      bottom: 0; left: 0; right: 0;
+      padding: 28px 14px 12px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      font-size: 14px;
       font-weight: 600;
       letter-spacing: 1px;
       text-transform: uppercase;
-      transition: all 0.3s ease;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      border: 1px solid rgba(255,255,255,0.2);
+      text-align: center;
+      pointer-events: none;
     }
 
-    a:hover {
-      background: rgba(255, 255, 255, 0.25);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    .carousel-item.active {
+      box-shadow: 0 0 30px rgba(140,130,255,0.35), 0 8px 32px rgba(0,0,0,0.6);
+    }
+
+    .carousel-item:not(.active) {
+      filter: brightness(0.55) saturate(0.7);
+    }
+
+    /* ── Navigation arrows ── */
+    .carousel-nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-top: 24px;
+    }
+
+    .nav-btn {
+      width: 44px; height: 44px;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.25s, transform 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.1);
+    }
+
+    .carousel-dots {
+      display: flex;
+      gap: 10px;
+    }
+
+    .carousel-dots .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.25s;
+    }
+
+    .carousel-dots .dot.active {
+      background: #9a93ff;
+      transform: scale(1.3);
+    }
+
+    /* ── Project modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: linear-gradient(145deg, #181830, #12122a);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      width: 90%;
+      max-width: 520px;
+      padding: 0;
+      overflow: hidden;
+      transform: translateY(30px) scale(0.95);
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-body {
+      padding: 24px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .modal-category {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #9a93ff;
+      font-weight: 600;
+    }
+
+    .modal-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.75);
+      text-align: justify;
+    }
+
+    .modal-visit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #7b6cf6, #5a4fd4);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+      border: none;
+      cursor: pointer;
+      margin-top: 4px;
+      box-shadow: 0 4px 16px rgba(123,108,246,0.3);
+    }
+
+    .modal-visit:hover {
+      background: linear-gradient(135deg, #8d80ff, #6b5fe8);
       transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(123,108,246,0.5);
     }
 
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 2;
+    }
+
+    .modal-close:hover { background: rgba(255,60,60,0.6); }
+
+    /* ── Footer ── */
     footer {
-      margin-top: 60px;
+      margin-top: 30px;
       padding: 20px;
       font-size: 14px;
       text-align: center;
       color: rgba(255,255,255,0.8);
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       gap: 12px;
+      position: relative;
+      z-index: 1;
     }
-    
+
     .linkedin-btn {
       display: inline-flex;
       align-items: center;
       padding: 8px 16px;
-      background: rgba(0, 119, 181, 0.8);
+      background: rgba(0,119,181,0.8);
       color: #fff;
       text-decoration: none;
       border-radius: 8px;
@@ -195,59 +332,39 @@
       transition: all 0.3s ease;
       border: 1px solid rgba(255,255,255,0.3);
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      text-transform: none;
-      letter-spacing: 0.5px;
     }
-    
+
     .linkedin-btn:hover {
-      background: rgba(0, 119, 181, 1);
-      box-shadow: 0 4px 12px rgba(0, 119, 181, 0.4);
+      background: rgba(0,119,181,1);
+      box-shadow: 0 4px 12px rgba(0,119,181,0.4);
       transform: translateY(-2px);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .carousel-item { width: 280px; height: 177px; margin-top: -88px; }
+      .carousel-scene { width: 280px; }
+      .carousel-viewport { height: 340px; }
     }
   </style>
 </head>
 <body>
   <canvas id="starfield"></canvas>
+
   <div class="content">
-  <h1>Carlos Mestre's Workshop</h1>
-  <div class="Apps">
-    <h2>Apps</h2>
-    <div class="link-container">
-      <div class="preview-image" style="background-image: url('./previews/blip.png');"></div>
-      <div class="description">Winner of the StartSchool Riga Hackaton (28/11)</div>
-      <a href="https://blip-blop.vercel.app/" target="_blank" rel="noopener noreferrer">Blip Blop - Online Sampler</a>
-    </div>
-    <div class="link-container">
-      <div class="preview-image" style="background-image: url('./previews/AC.png');"></div>
-      <a href="https://audiocleaner.site/" target="_blank" rel="noopener noreferrer">Audio Cleaner</a>
-    </div>
-  </div>
-  <div class="Games">
-    <h2>Games</h2>
-    <div class="link-container">
-      <div class="preview-image" style="background-image: url('./previews/logic-run.png');"></div>
-      <div class="description">Winner of the my_spaceship contest for a promotional StartSchool game</div>
-      <a href="https://logic-run.vercel.app/" target="_blank" rel="noopener noreferrer">Logic Run</a>
-    </div>
-    <div class="link-container">
-      <div class="preview-image" style="background-image: url('./previews/tama.png');"></div>
-      <a href="https://carlosmestre1997.github.io/tamachill/" target="_blank" rel="noopener noreferrer">Tamagochill</a>
-    </div>
-    <div class="link-container">
-      <div class="preview-image" style="background-image: url('./previews/guess.png');"></div>
-      <a href="https://guess-exe.vercel.app/" target="_blank" rel="noopener noreferrer">Guess.exe - impostor game</a>
-    </div>
-    <div class="link-container">
-      <div class="preview-image" style="background-image: url('./previews/bas2.png');"></div>
-      <a href="https://carlosmestre1997.github.io/BasaroRPG-II/" target="_blank" rel="noopener noreferrer">Basaro II</a>
-    </div>
-    <div class="link-container">
-      <div class="preview-image" style="background-image: url('./previews/bas.png');"></div>
-      <a href="https://carlosmestre1997.github.io/BasaroRPG/" target="_blank" rel="noopener noreferrer">BasaroRPG</a>
-    </div>
-    <div class="link-container">
-      <div class="preview-image" style="background-image: url('./previews/veggie.png');"></div>
-      <a href="https://carlosmestre1997.github.io/SSQuiz/" target="_blank" rel="noopener noreferrer">Vegetable Quiz</a>
+    <h1>Carlos Mestre's Workshop</h1>
+    <h2>Projects</h2>
+
+    <div class="carousel-wrapper">
+      <div class="carousel-viewport" id="carouselViewport">
+        <div class="carousel-scene" id="carouselScene"></div>
+      </div>
+
+      <div class="carousel-nav">
+        <button class="nav-btn" id="prevBtn">&#8592;</button>
+        <div class="carousel-dots" id="carouselDots"></div>
+        <button class="nav-btn" id="nextBtn">&#8594;</button>
+      </div>
     </div>
   </div>
 
@@ -255,15 +372,281 @@
     <span>Made by Carlos Mestre</span>
     <a href="https://www.linkedin.com/in/carlos-mestre1997" target="_blank" rel="noopener noreferrer" class="linkedin-btn">LinkedIn</a>
   </footer>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" style="position:relative;">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <img class="modal-img" id="modalImg" src="" alt="">
+      <div class="modal-body">
+        <span class="modal-category" id="modalCategory"></span>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-desc" id="modalDesc"></div>
+        <a class="modal-visit" id="modalVisit" href="#" target="_blank" rel="noopener noreferrer">
+          Visit Project &rarr;
+        </a>
+      </div>
+    </div>
   </div>
 
   <script>
-    // Pixel Stars Animation
+    /* ── Project data ── */
+    const projects = [
+      {
+        name: 'Blip Blop',
+        category: 'App',
+        img: './previews/blip.png',
+        url: 'https://blip-blop.vercel.app/',
+        desc: 'Make music using an online sampler and beat-maker, just like a pro. Winner of the November StartSchool Riga Hackathon (winner of both the jury vote and public vote).'
+      },
+      {
+        name: 'Audio Cleaner',
+        category: 'App',
+        img: './previews/AC.png',
+        url: 'https://audiocleaner.site/',
+        desc: 'A web-based tool that cleans and enhances audio files right in the browser, unique with a live playback feature. Developed during a lecture on vibecoding at Startschool'
+      },
+      {
+        name: 'Logic Run',
+        category: 'Game',
+        img: './previews/logic-run.png',
+        url: 'https://logic-run.vercel.app/',
+        desc: 'A promotional game for StartSchool. Winner of the my_spaceship contest (300EUR prize). Tested with students at Lycée Français de Riga and StartSchool students, it was a hit for its fun gameplay and catchy music.'
+      },
+      {
+        name: 'Tamagochill',
+        category: 'Game',
+        img: './previews/tama.png',
+        url: 'https://carlosmestre1997.github.io/tamachill/',
+        desc: 'A relaxing virtual pet game inspired by classic Tamagotchi. Take care of your pixel companion. Created on my spare time trying to unite my art skills with my beginner web development skills. It was a fun experiment in pixel art and simple game mechanics, and I enjoyed bringing a bit of nostalgia to life.'
+      },
+      {
+        name: 'Guess.exe',
+        category: 'Game',
+        img: './previews/guess.png',
+        url: 'https://guess-exe.vercel.app/',
+        desc: 'An impostor-style guessing game. Figure out who is who before time runs out. Developed during a collaborative coding StartSchool session on API integration, I did lead the concept and development on this team project'
+      },
+      {
+        name: 'Basaro II',
+        category: 'Game',
+        img: './previews/bas2.png',
+        url: 'https://carlosmestre1997.github.io/BasaroRPG-II/',
+        desc: 'The sequel to BasaroRPG — an expanded desicion based RPG adventure with new stories, endings and possibilities. Still developed before joining StartSchool, it was a fun way to practice my web development skills and storytelling abilities, creating a more complex narrative experience than the original BasaroRPG.'
+      },
+      {
+        name: 'BasaroRPG',
+        category: 'Game',
+        img: './previews/bas.png',
+        url: 'https://carlosmestre1997.github.io/BasaroRPG/',
+        desc: 'A desicion based RPG where your choices will create different endings to the adventure. My first project while learning web development on my own even before joining StartSchool program.'
+      },
+      {
+        name: 'Vegetable Quiz',
+        category: 'Game',
+        img: './previews/veggie.png',
+        url: 'https://carlosmestre1997.github.io/SSQuiz/',
+        desc: 'A fun quiz where you can find out what vegetable are you! Developed in a collaborative coding session at StartSchool, I worked alongside other team mates to develop this game, drawing the animations and figuring out the technical implementation of the quiz logic and design.'
+      },
+      {
+        name: 'Did Kanye Tweet This?',
+        category: 'App',
+        img: './previews/kanye.png',
+        url: 'https://carlosmestre1997.github.io/Kanye/',
+        desc: 'A Kanye West inspired app, can you guess which tweets are from the real Kanye? Explore quotes and vibes. Developed in an hour during a StartSchool session on GoogleCloud Authentication.'
+      },
+      {
+        name: 'Ruuta Studio',
+        category: 'Online Shop',
+        img: './previews/ruutastudio.png',
+        url: 'https://www.ruutastudio.com/',
+        desc: 'A professional online shop for an artist showcasing creative work, exhibitions and blog posts. This project is still being developed in my spare time for my partner\'s art studio, and it\'s been a great opportunity to apply my web development skills in a real-world context, creating a visually appealing and functional website to showcase the artist\'s work and connect with their audience.'
+      },
+    ];
+
+    /* ── Carousel logic ── */
+    const scene   = document.getElementById('carouselScene');
+    const dots    = document.getElementById('carouselDots');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const viewport = document.getElementById('carouselViewport');
+
+    const total = projects.length;
+    const theta = 360 / total;
+    // Radius of the carousel ring — needs to be big enough so cards don't overlap
+    const isMobile = window.innerWidth <= 600;
+    let cardW = isMobile ? 280 : 400;
+    let radius = Math.round(cardW / (2 * Math.tan(Math.PI / total))) + 60;
+
+    let current = 0;
+    let angle = 0; // continuous rotation angle (degrees)
+    let autoTimer = null;
+
+    function buildCarousel() {
+      scene.innerHTML = '';
+      dots.innerHTML = '';
+      projects.forEach((p, i) => {
+        const el = document.createElement('div');
+        el.className = 'carousel-item' + (i === current ? ' active' : '');
+        el.dataset.index = i; // Store index for reliable identification
+        el.style.transform = `rotateY(${theta * i}deg) translateZ(${radius}px)`;
+        el.innerHTML = `<img src="${p.img}" alt="${p.name}"><div class="item-label">${p.name}</div>`;
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = parseInt(el.dataset.index, 10);
+          if (idx === current) openModal(idx);
+          else goTo(idx);
+        });
+        scene.appendChild(el);
+
+        const dot = document.createElement('button');
+        dot.className = 'dot' + (i === current ? ' active' : '');
+        dot.addEventListener('click', () => goTo(i));
+        dots.appendChild(dot);
+      });
+      rotateScene();
+    }
+
+    function rotateScene() {
+      scene.style.transform = `translateZ(-${radius}px) rotateY(${angle}deg)`;
+      const prevIdx = (current - 1 + total) % total;
+      const nextIdx = (current + 1) % total;
+      document.querySelectorAll('.carousel-item').forEach((el) => {
+        const i = parseInt(el.dataset.index, 10); // Use stored index
+        el.classList.toggle('active', i === current);
+        // Calculate distance from current (accounting for wrap-around)
+        let dist = Math.abs(i - current);
+        if (dist > total / 2) dist = total - dist;
+        
+        // Check if card is in front area or is an adjacent card
+        const isFront = dist <= 2;
+        const isAdjacent = (i === current || i === prevIdx || i === nextIdx);
+        
+        // Only current and adjacent cards should be visible and clickable
+        // Distance 2 cards are visible but not clickable to prevent interference
+        el.style.visibility = (isFront || isAdjacent) ? 'visible' : 'hidden';
+        el.style.pointerEvents = isAdjacent ? 'auto' : 'none';
+        
+        // Update transform: add extra translateZ for active card to ensure it's clickable
+        const baseTransform = `rotateY(${theta * i}deg) translateZ(${radius}px)`;
+        if (i === current) {
+          // Active card gets a forward boost to ensure it's in front for clicks
+          el.style.transform = `${baseTransform} translateZ(80px)`;
+          el.style.zIndex = 1000;
+        } else if (i === prevIdx) {
+          // Previous card (left side) - give it forward boost
+          el.style.transform = `${baseTransform} translateZ(60px)`;
+          el.style.zIndex = 600;
+        } else if (i === nextIdx) {
+          // Next card (right side) - give it forward boost  
+          el.style.transform = `${baseTransform} translateZ(60px)`;
+          el.style.zIndex = 601;
+        } else if (dist === 2) {
+          // Cards at distance 2 get smaller boost but stay behind adjacent cards
+          el.style.transform = `${baseTransform} translateZ(10px)`;
+          el.style.zIndex = 100;
+        } else {
+          el.style.transform = baseTransform;
+          el.style.zIndex = Math.max(1, 50 - dist * 10);
+        }
+      });
+      document.querySelectorAll('.dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+      });
+    }
+
+    function goTo(idx) {
+      const next = ((idx % total) + total) % total;
+      // Calculate shortest rotation step
+      let diff = next - current;
+      if (diff > total / 2) diff -= total;
+      if (diff < -total / 2) diff += total;
+      angle -= diff * theta;
+      current = next;
+      rotateScene();
+      resetAuto();
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+
+    /* ── Mouse wheel ── */
+    let wheelCooldown = false;
+    viewport.addEventListener('wheel', e => {
+      e.preventDefault();
+      if (wheelCooldown) return;
+      wheelCooldown = true;
+      if (e.deltaY > 0 || e.deltaX > 0) goTo(current + 1);
+      else goTo(current - 1);
+      setTimeout(() => { wheelCooldown = false; }, 400);
+    }, { passive: false });
+
+    /* ── Auto-rotate ── */
+    function clearAutoRotate() { clearInterval(autoTimer); }
+    function resetAuto() {
+      clearAutoRotate();
+      autoTimer = setInterval(() => goTo(current + 1), 4000);
+    }
+    resetAuto();
+
+    /* ── Keyboard navigation ── */
+    document.addEventListener('keydown', e => {
+      if (document.getElementById('modalOverlay').classList.contains('open')) {
+        if (e.key === 'Escape') closeModal();
+        return;
+      }
+      if (e.key === 'ArrowLeft') goTo(current - 1);
+      else if (e.key === 'ArrowRight') goTo(current + 1);
+      else if (e.key === 'Enter') openModal(current);
+    });
+
+    /* ── Modal ── */
+    const overlay   = document.getElementById('modalOverlay');
+    const modalImg  = document.getElementById('modalImg');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalCat  = document.getElementById('modalCategory');
+    const modalVisit = document.getElementById('modalVisit');
+    const modalClose = document.getElementById('modalClose');
+
+    function openModal(idx) {
+      const p = projects[idx];
+      modalImg.src = p.img;
+      modalImg.alt = p.name;
+      modalTitle.textContent = p.name;
+      modalDesc.textContent = p.desc;
+      modalCat.textContent = p.category;
+      modalVisit.href = p.url;
+      overlay.classList.add('open');
+      clearAutoRotate();
+    }
+
+    function closeModal() {
+      overlay.classList.remove('open');
+      resetAuto();
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+    /* ── Responsive rebuild ── */
+    window.addEventListener('resize', () => {
+      const mobile = window.innerWidth <= 600;
+      cardW = mobile ? 280 : 400;
+      radius = Math.round(cardW / (2 * Math.tan(Math.PI / total))) + 60;
+      buildCarousel();
+    });
+
+    buildCarousel();
+  </script>
+
+  <script>
+    /* ── Pixel Stars Animation ── */
     const STAR_COLORS = [
-      "#FFFFFF", "#FFFFAA", "#AAAAFF", "#FFAAAA", 
+      "#FFFFFF", "#FFFFAA", "#AAAAFF", "#FFAAAA",
       "#AAFFAA", "#FFAAFF", "#AAFFFF"
     ];
-    
+
     const config = {
       starDensity: 0.00004,
       twinkleProbability: 0.7,
@@ -275,7 +658,7 @@
       shootingStarPixelSize: 2,
       targetFps: 16
     };
-    
+
     const canvas = document.getElementById('starfield');
     const ctx = canvas.getContext('2d');
     let backgroundStars = [];
@@ -283,245 +666,124 @@
     let lastRenderTime = 0;
     const frameInterval = 1000 / config.targetFps;
     let animationFrame = null;
-    
+
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
-    
+
     function initBackgroundStars() {
       backgroundStars = [];
       const area = canvas.width * canvas.height;
       const numStars = Math.floor(area * config.starDensity);
-      
+
       for (let i = 0; i < numStars; i++) {
         const shouldTwinkle = Math.random() < config.twinkleProbability;
         const gridX = Math.floor(Math.random() * (canvas.width / config.pixelSize)) * config.pixelSize;
         const gridY = Math.floor(Math.random() * (canvas.height / config.pixelSize)) * config.pixelSize;
         const colorIndex = Math.floor(Math.random() * STAR_COLORS.length);
         const baseOpacity = Math.random() * 0.5 + 0.5;
-        
+
         backgroundStars.push({
-          x: gridX,
-          y: gridY,
+          x: gridX, y: gridY,
           color: STAR_COLORS[colorIndex],
-          baseOpacity: baseOpacity,
-          currentOpacity: baseOpacity,
+          baseOpacity, currentOpacity: baseOpacity,
           twinkle: shouldTwinkle,
           twinkleSpeed: config.minTwinkleSpeed + Math.random() * (config.maxTwinkleSpeed - config.minTwinkleSpeed),
-          twinkleDirection: -1,
-          twinkleTimer: 0
+          twinkleDirection: -1, twinkleTimer: 0
         });
       }
     }
-    
+
     function regenerateBackgroundStars() {
-      if (backgroundStars.length === 0) return;
-      
-      const numToRegenerate = Math.max(1, Math.floor(backgroundStars.length * config.percentToRegenerate));
-      
-      for (let i = 0; i < numToRegenerate; i++) {
-        const randomIndex = Math.floor(Math.random() * backgroundStars.length);
-        const shouldTwinkle = Math.random() < config.twinkleProbability;
+      if (!backgroundStars.length) return;
+      const n = Math.max(1, Math.floor(backgroundStars.length * config.percentToRegenerate));
+      for (let i = 0; i < n; i++) {
+        const idx = Math.floor(Math.random() * backgroundStars.length);
         const gridX = Math.floor(Math.random() * (canvas.width / config.pixelSize)) * config.pixelSize;
         const gridY = Math.floor(Math.random() * (canvas.height / config.pixelSize)) * config.pixelSize;
-        const colorIndex = Math.floor(Math.random() * STAR_COLORS.length);
         const baseOpacity = Math.random() * 0.5 + 0.5;
-        
-        backgroundStars[randomIndex] = {
-          x: gridX,
-          y: gridY,
-          color: STAR_COLORS[colorIndex],
-          baseOpacity: baseOpacity,
-          currentOpacity: baseOpacity,
-          twinkle: shouldTwinkle,
+        backgroundStars[idx] = {
+          x: gridX, y: gridY,
+          color: STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)],
+          baseOpacity, currentOpacity: baseOpacity,
+          twinkle: Math.random() < config.twinkleProbability,
           twinkleSpeed: config.minTwinkleSpeed + Math.random() * (config.maxTwinkleSpeed - config.minTwinkleSpeed),
-          twinkleDirection: -1,
-          twinkleTimer: 0
+          twinkleDirection: -1, twinkleTimer: 0
         };
       }
     }
-    
+
     function createShootingStar() {
-      const x = Math.random() * window.innerWidth;
-      const angle = 45 + Math.random() * 90;
-      
       return {
         id: Date.now(),
-        x: x,
-        y: 0,
-        angle: angle,
-        scale: 1,
-        speed: Math.random() * 5 + 8,
-        distance: 0,
-        trail: []
+        x: Math.random() * window.innerWidth, y: 0,
+        angle: 45 + Math.random() * 90,
+        scale: 1, speed: Math.random() * 5 + 8,
+        distance: 0, trail: []
       };
     }
-    
-    function animate(timestamp) {
-      if (timestamp - lastRenderTime < frameInterval) {
-        animationFrame = requestAnimationFrame(animate);
-        return;
-      }
-      
+
+    function animateStars(timestamp) {
+      if (timestamp - lastRenderTime < frameInterval) { animationFrame = requestAnimationFrame(animateStars); return; }
       lastRenderTime = timestamp;
-      
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw background stars
+
       backgroundStars.forEach(star => {
         ctx.fillStyle = star.color;
         ctx.globalAlpha = star.currentOpacity;
         ctx.fillRect(star.x, star.y, config.pixelSize, config.pixelSize);
-        
         if (star.twinkle) {
           star.twinkleTimer += 1 / config.targetFps;
-          
-          if (star.twinkleTimer >= star.twinkleSpeed) {
-            star.twinkleTimer = 0;
-            star.twinkleDirection *= -1;
-          }
-          
-          const progress = star.twinkleTimer / star.twinkleSpeed;
-          if (progress < 0.5) {
-            star.currentOpacity = star.twinkleDirection < 0 ? star.baseOpacity : star.baseOpacity * 0.3;
-          } else {
-            star.currentOpacity = star.twinkleDirection < 0 ? star.baseOpacity * 0.3 : star.baseOpacity;
-          }
+          if (star.twinkleTimer >= star.twinkleSpeed) { star.twinkleTimer = 0; star.twinkleDirection *= -1; }
+          const p = star.twinkleTimer / star.twinkleSpeed;
+          star.currentOpacity = (p < 0.5)
+            ? (star.twinkleDirection < 0 ? star.baseOpacity : star.baseOpacity * 0.3)
+            : (star.twinkleDirection < 0 ? star.baseOpacity * 0.3 : star.baseOpacity);
         }
       });
-      
-      // Update shooting stars
+
       if (shootingStars.length) {
         shootingStars = shootingStars.map(star => {
-          const newX = star.x + star.speed * Math.cos((star.angle * Math.PI) / 180);
-          const newY = star.y + star.speed * Math.sin((star.angle * Math.PI) / 180);
-          const newDistance = star.distance + star.speed;
-          
-          const newTrail = [...star.trail];
-          
-          if (newDistance % 8 < star.speed) {
-            newTrail.push({ x: star.x, y: star.y, opacity: 1.0 });
-          }
-          
-          const updatedTrail = newTrail
-            .map(point => ({ ...point, opacity: point.opacity - 0.1 }))
-            .filter(point => point.opacity > 0);
-          
-          return {
-            ...star,
-            x: newX,
-            y: newY,
-            distance: newDistance,
-            trail: updatedTrail
-          };
-        }).filter(star => 
-          star.x >= -30 && star.x <= window.innerWidth + 30 &&
-          star.y >= -30 && star.y <= window.innerHeight + 30
-        );
-        
-        // Draw shooting stars
+          const nX = star.x + star.speed * Math.cos(star.angle * Math.PI / 180);
+          const nY = star.y + star.speed * Math.sin(star.angle * Math.PI / 180);
+          const nD = star.distance + star.speed;
+          const t = [...star.trail];
+          if (nD % 8 < star.speed) t.push({ x: star.x, y: star.y, opacity: 1 });
+          const ut = t.map(p => ({ ...p, opacity: p.opacity - 0.1 })).filter(p => p.opacity > 0);
+          return { ...star, x: nX, y: nY, distance: nD, trail: ut };
+        }).filter(s => s.x >= -30 && s.x <= canvas.width + 30 && s.y >= -30 && s.y <= canvas.height + 30);
+
         shootingStars.forEach(star => {
-          // Draw trail
-          star.trail.forEach(point => {
-            ctx.save();
-            ctx.translate(point.x, point.y);
-            ctx.rotate((star.angle * Math.PI) / 180);
-            ctx.translate(-point.x, -point.y);
-            
-            ctx.fillStyle = `rgba(180, 242, 255, ${point.opacity})`;
-            ctx.fillRect(point.x, point.y, config.shootingStarPixelSize, config.shootingStarPixelSize);
-            
+          star.trail.forEach(pt => {
+            ctx.save(); ctx.translate(pt.x, pt.y); ctx.rotate(star.angle * Math.PI / 180); ctx.translate(-pt.x, -pt.y);
+            ctx.fillStyle = `rgba(180,242,255,${pt.opacity})`;
+            ctx.fillRect(pt.x, pt.y, config.shootingStarPixelSize, config.shootingStarPixelSize);
             ctx.restore();
           });
-          
-          // Draw star
-          const starWidth = 4;
-          const starHeight = 2;
-          
-          ctx.save();
-          ctx.translate(star.x, star.y);
-          ctx.rotate((star.angle * Math.PI) / 180);
-          ctx.translate(-star.x, -star.y);
-          
-          ctx.fillStyle = "#ffffff";
-          ctx.globalAlpha = 1.0;
-          
-          for (let y = 0; y < starHeight; y++) {
-            for (let x = 0; x < starWidth; x++) {
-              if ((x === 0 && y === 1) || (x === 3 && y === 0)) continue;
-              
-              ctx.fillRect(
-                star.x + x * config.shootingStarPixelSize,
-                star.y + y * config.shootingStarPixelSize,
-                config.shootingStarPixelSize,
-                config.shootingStarPixelSize
-              );
-            }
+          ctx.save(); ctx.translate(star.x, star.y); ctx.rotate(star.angle * Math.PI / 180); ctx.translate(-star.x, -star.y);
+          ctx.fillStyle = '#fff'; ctx.globalAlpha = 1;
+          for (let y = 0; y < 2; y++) for (let x = 0; x < 4; x++) {
+            if ((x === 0 && y === 1) || (x === 3 && y === 0)) continue;
+            ctx.fillRect(star.x + x * config.shootingStarPixelSize, star.y + y * config.shootingStarPixelSize, config.shootingStarPixelSize, config.shootingStarPixelSize);
           }
-          
           ctx.restore();
         });
       }
-      
-      animationFrame = requestAnimationFrame(animate);
+      animationFrame = requestAnimationFrame(animateStars);
     }
-    
-    function createShootingStarPeriodically() {
-      const newStar = createShootingStar();
-      shootingStars.push(newStar);
-      
-      const randomDelay = Math.random() * 4000 + 2000;
-      setTimeout(createShootingStarPeriodically, randomDelay);
+
+    function spawnShootingStars() {
+      shootingStars.push(createShootingStar());
+      setTimeout(spawnShootingStars, Math.random() * 4000 + 2000);
     }
-    
-    // Initialize
+
     resizeCanvas();
     initBackgroundStars();
-    animationFrame = requestAnimationFrame(animate);
-    createShootingStarPeriodically();
-    
-    const regenerationInterval = setInterval(regenerateBackgroundStars, config.starRegenerationInterval);
-    
-    window.addEventListener('resize', () => {
-      resizeCanvas();
-      initBackgroundStars();
-    });
-  </script>
-  
-  <script>
-    // Optional: Add touch support for mobile devices
-    document.addEventListener('DOMContentLoaded', function() {
-      const linkContainers = document.querySelectorAll('.link-container');
-      
-      linkContainers.forEach(container => {
-        const preview = container.querySelector('.preview-image');
-        const description = container.querySelector('.description');
-        
-        // For touch devices, show preview and description on tap and hide after 3 seconds
-        container.addEventListener('touchstart', function() {
-          if (preview) {
-            preview.style.opacity = '1';
-            preview.style.visibility = 'visible';
-          }
-          if (description) {
-            description.style.opacity = '1';
-            description.style.visibility = 'visible';
-          }
-          
-          setTimeout(() => {
-            if (preview) {
-              preview.style.opacity = '0';
-              preview.style.visibility = 'hidden';
-            }
-            if (description) {
-              description.style.opacity = '0';
-              description.style.visibility = 'hidden';
-            }
-          }, 3000);
-        });
-      });
-    });
+    requestAnimationFrame(animateStars);
+    spawnShootingStars();
+    setInterval(regenerateBackgroundStars, config.starRegenerationInterval);
+    window.addEventListener('resize', () => { resizeCanvas(); initBackgroundStars(); });
   </script>
 </body>
 </html>
