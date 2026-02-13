@@ -82,6 +82,23 @@
       overflow: visible;
     }
 
+    .carousel-click-zone {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 35%;
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    .carousel-click-zone.left {
+      left: 0;
+    }
+
+    .carousel-click-zone.right {
+      right: 0;
+    }
+
 
 
     .carousel-scene {
@@ -357,7 +374,9 @@
 
     <div class="carousel-wrapper">
       <div class="carousel-viewport" id="carouselViewport">
+        <div class="carousel-click-zone left" id="clickZoneLeft"></div>
         <div class="carousel-scene" id="carouselScene"></div>
+        <div class="carousel-click-zone right" id="clickZoneRight"></div>
       </div>
 
       <div class="carousel-nav">
@@ -509,46 +528,18 @@
 
     function rotateScene() {
       scene.style.transform = `translateZ(-${radius}px) rotateY(${angle}deg)`;
-      const prevIdx = (current - 1 + total) % total;
-      const nextIdx = (current + 1) % total;
       document.querySelectorAll('.carousel-item').forEach((el) => {
-        const i = parseInt(el.dataset.index, 10); // Use stored index
+        const i = parseInt(el.dataset.index, 10);
         el.classList.toggle('active', i === current);
-        // Calculate distance from current (accounting for wrap-around)
         let dist = Math.abs(i - current);
         if (dist > total / 2) dist = total - dist;
         
-        // Check if card is in front area or is an adjacent card
         const isFront = dist <= 2;
-        const isAdjacent = (i === current || i === prevIdx || i === nextIdx);
-        
-        // Only current and adjacent cards should be visible and clickable
-        // Distance 2 cards are visible but not clickable to prevent interference
-        el.style.visibility = (isFront || isAdjacent) ? 'visible' : 'hidden';
-        el.style.pointerEvents = isAdjacent ? 'auto' : 'none';
-        
-        // Update transform: add extra translateZ for active card to ensure it's clickable
-        const baseTransform = `rotateY(${theta * i}deg) translateZ(${radius}px)`;
-        if (i === current) {
-          // Active card gets a forward boost to ensure it's in front for clicks
-          el.style.transform = `${baseTransform} translateZ(80px)`;
-          el.style.zIndex = 1000;
-        } else if (i === prevIdx) {
-          // Previous card (left side) - give it forward boost
-          el.style.transform = `${baseTransform} translateZ(60px)`;
-          el.style.zIndex = 600;
-        } else if (i === nextIdx) {
-          // Next card (right side) - give it forward boost  
-          el.style.transform = `${baseTransform} translateZ(60px)`;
-          el.style.zIndex = 601;
-        } else if (dist === 2) {
-          // Cards at distance 2 get smaller boost but stay behind adjacent cards
-          el.style.transform = `${baseTransform} translateZ(10px)`;
-          el.style.zIndex = 100;
-        } else {
-          el.style.transform = baseTransform;
-          el.style.zIndex = Math.max(1, 50 - dist * 10);
-        }
+        el.style.visibility = isFront ? 'visible' : 'hidden';
+        // Only the active (center) card is clickable for opening modal;
+        // left/right click zones handle adjacent card navigation
+        el.style.pointerEvents = (i === current) ? 'auto' : 'none';
+        el.style.transform = `rotateY(${theta * i}deg) translateZ(${radius}px)`;
       });
       document.querySelectorAll('.dot').forEach((d, i) => {
         d.classList.toggle('active', i === current);
@@ -569,6 +560,10 @@
 
     prevBtn.addEventListener('click', () => goTo(current - 1));
     nextBtn.addEventListener('click', () => goTo(current + 1));
+
+    /* ── Click zones for reliable left/right navigation ── */
+    document.getElementById('clickZoneLeft').addEventListener('click', () => goTo(current - 1));
+    document.getElementById('clickZoneRight').addEventListener('click', () => goTo(current + 1));
 
     /* ── Mouse wheel ── */
     let wheelCooldown = false;
